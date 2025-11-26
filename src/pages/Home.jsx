@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Calendar, ArrowRight, Instagram, Youtube } from 'lucide-react';
+import { ChevronRight, Calendar, ArrowRight, Instagram, Youtube, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/UI/Button';
 import { newsData } from '../data/mockData';
@@ -38,12 +38,15 @@ const Home = () => {
     }, [slides.length]);
 
     const [nextMatch, setNextMatch] = useState(null);
+    const [recentMatches, setRecentMatches] = useState([]);
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
     useEffect(() => {
-        const fetchNextMatch = async () => {
+        const fetchData = async () => {
             const today = new Date().toISOString().split('T')[0];
-            const { data, error } = await supabase
+
+            // Fetch Next Match
+            const { data: nextMatchData } = await supabase
                 .from('matches')
                 .select('*')
                 .gte('date', today)
@@ -52,12 +55,24 @@ const Home = () => {
                 .limit(1)
                 .single();
 
-            if (data) {
-                setNextMatch(data);
+            if (nextMatchData) {
+                setNextMatch(nextMatchData);
+            }
+
+            // Fetch Recent Matches
+            const { data: recentMatchesData } = await supabase
+                .from('matches')
+                .select('*')
+                .lt('date', today)
+                .order('date', { ascending: false })
+                .limit(4);
+
+            if (recentMatchesData) {
+                setRecentMatches(recentMatchesData);
             }
         };
 
-        fetchNextMatch();
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -207,6 +222,34 @@ const Home = () => {
                 </div>
             </section>
 
+
+
+            {/* Recent Results Section */}
+            {
+                recentMatches.length > 0 && (
+                    <section className="py-12 bg-gray-900 border-b border-white/5">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-3xl font-heading font-bold text-white mb-8 text-center">ÚLTIMOS RESULTADOS</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {recentMatches.map((match) => (
+                                    <div key={match.id} className="bg-halcones-card rounded-lg p-4 border border-white/10 shadow-lg">
+                                        <div className="text-xs text-gray-400 mb-2 text-center">{match.date} - {match.category}</div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className={`font-bold ${match.home_score > match.away_score ? 'text-green-400' : 'text-white'}`}>{match.home_team}</span>
+                                            <span className="text-xl font-bold text-white">{match.home_score}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className={`font-bold ${match.away_score > match.home_score ? 'text-green-400' : 'text-white'}`}>{match.away_team}</span>
+                                            <span className="text-xl font-bold text-white">{match.away_score}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )
+            }
+
             {/* News Section */}
             <section className="py-20 bg-halcones-dark">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -260,6 +303,87 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* Quick Gallery Section */}
+            <section className="py-20 bg-gray-900">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl font-heading font-bold text-white mb-8 text-center">GALERÍA</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
+                            <img
+                                src="https://images.unsplash.com/photo-1580748141549-71748dbe0bdc?q=80&w=800&auto=format&fit=crop"
+                                alt="Gallery 1"
+                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            />
+                        </div>
+                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
+                            <img
+                                src="https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=800&auto=format&fit=crop"
+                                alt="Gallery 2"
+                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            />
+                        </div>
+                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
+                            <img
+                                src="https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=800&auto=format&fit=crop"
+                                alt="Gallery 3"
+                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            />
+                        </div>
+                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
+                            <img
+                                src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop"
+                                alt="Gallery 4"
+                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Location Map Section */}
+            <section className="h-96 w-full relative">
+                <iframe
+                    src="https://maps.google.com/maps?q=Pabellon+Cecilio+Gallego+Torrevieja&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Ubicación Halcones Torrevieja"
+                ></iframe>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8 pointer-events-none">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+                        <h3 className="text-2xl font-bold mb-2">VISÍTANOS</h3>
+                        <p className="flex items-center"><span className="mr-2">📍</span> Pabellón Cecilio Gallego</p>
+                    </div>
+                </div>
+            </section>
+            {/* Sponsors Section */}
+            <section className="py-12 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-2xl font-heading font-bold text-gray-900 mb-8 text-center uppercase tracking-wider">Nuestros Patrocinadores</h2>
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 grayscale hover:grayscale-0 transition-all duration-500">
+                        <a href="https://www.youtube.com/@halconestorrevieja" target="_blank" rel="noopener noreferrer">
+                            <img src="/img/youtube.jpg" alt="Halcones Channel" className="h-12 md:h-16 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                        </a>
+                        <a href="https://hernaproyectos.com/" target="_blank" rel="noopener noreferrer">
+                            <img src="/img/herna.png" alt="Herna Proyectos" className="h-12 md:h-16 object-contain opacity-80 hover:opacity-100 transition-opacity bg-gray-800 p-2 rounded" />
+                        </a>
+                        <a href="https://santamardelavega.com/" target="_blank" rel="noopener noreferrer">
+                            <img src="/img/santamar.png" alt="Santamara" className="h-10 md:h-14 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                        </a>
+                        <a href="https://www.volabola.es/" target="_blank" rel="noopener noreferrer">
+                            <img src="/img/Volabola.png" alt="Volabola" className="h-10 md:h-14 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                        </a>
+                        <a href="https://torrevieja.es/es" target="_blank" rel="noopener noreferrer">
+                            <img src="/img/Captura.PNG" alt="Ayuntamiento de Torrevieja" className="h-12 md:h-16 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                        </a>
+                        <img src="/img/torre.PNG" alt="Torrevieja Sports City" className="h-12 md:h-16 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                    </div>
+                </div>
+            </section>
+
             {/* CTA Section */}
             <section className="py-20 bg-gradient-to-r from-blue-900 to-halcones-blue text-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/20"></div>
@@ -290,7 +414,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-        </div>
+        </div >
     );
 };
 

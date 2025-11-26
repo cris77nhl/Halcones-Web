@@ -35,7 +35,7 @@ const Merchandising = () => {
                     ))}
                 </div>
 
-                <div className="mt-16 bg-gradient-to-br from-halcones-card to-gray-900 rounded-2xl p-8 md:p-12 text-center border border-gray-800 shadow-2xl relative overflow-hidden">
+                <div className="mt-16 bg-gradient-to-br from-halcones-card to-gray-900 rounded-2xl p-8 md:p-10 text-center border border-gray-800 shadow-2xl relative overflow-hidden max-w-3xl mx-auto">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-halcones-blue to-purple-600"></div>
                     <ShoppingBag className="w-16 h-16 text-halcones-blue mx-auto mb-6" />
                     <h2 className="text-3xl font-bold text-white mb-4">¿Cómo comprar?</h2>
