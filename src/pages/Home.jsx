@@ -1,0 +1,297 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight, Calendar, ArrowRight, Instagram, Youtube } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Button from '../components/UI/Button';
+import { newsData } from '../data/mockData';
+import { supabase } from '../lib/supabase';
+
+const Home = () => {
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    const slides = [
+        {
+            id: 1,
+            image: '/img/senior.jfif',
+            title: 'PASIÓN POR EL HOCKEY',
+            subtitle: 'Únete a la familia de los Halcones Torrevieja',
+        },
+        {
+            id: 2,
+            image: 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1920&auto=format&fit=crop',
+            title: 'ESCUELA DE CAMPEONES',
+            subtitle: 'Formando jugadores desde la base',
+        },
+        {
+            id: 3,
+            image: 'https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=1920&auto=format&fit=crop',
+            title: 'COMPETICIÓN Y DIVERSIÓN',
+            subtitle: 'Vive la emoción de cada partido',
+        },
+    ];
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % slides.length);
+        }, 5000);
+        return () => clearInterval(timer);
+    }, [slides.length]);
+
+    const [nextMatch, setNextMatch] = useState(null);
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+    useEffect(() => {
+        const fetchNextMatch = async () => {
+            const today = new Date().toISOString().split('T')[0];
+            const { data, error } = await supabase
+                .from('matches')
+                .select('*')
+                .gte('date', today)
+                .order('date', { ascending: true })
+                .order('time', { ascending: true })
+                .limit(1)
+                .single();
+
+            if (data) {
+                setNextMatch(data);
+            }
+        };
+
+        fetchNextMatch();
+    }, []);
+
+    useEffect(() => {
+        if (!nextMatch) return;
+
+        const timer = setInterval(() => {
+            const matchDate = new Date(`${nextMatch.date}T${nextMatch.time}`);
+            const now = new Date();
+            const difference = matchDate - now;
+
+            if (difference > 0) {
+                setTimeLeft({
+                    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                    minutes: Math.floor((difference / 1000 / 60) % 60),
+                    seconds: Math.floor((difference / 1000) % 60),
+                });
+            } else {
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [nextMatch]);
+
+    return (
+        <div className="flex flex-col bg-halcones-dark min-h-screen">
+            {/* Hero Section */}
+            <section className="relative h-[80vh] w-full overflow-hidden bg-halcones-dark">
+                <AnimatePresence mode='wait'>
+                    <motion.div
+                        key={currentSlide}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                        className="absolute inset-0"
+                    >
+                        <div
+                            className="absolute inset-0 bg-cover bg-center"
+                            style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
+                        />
+                        <div className="absolute inset-0 bg-black/60" />
+                    </motion.div>
+                </AnimatePresence>
+
+                <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+                    <div className="max-w-4xl">
+                        <motion.h1
+                            key={`title-${currentSlide}`}
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.8 }}
+                            className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 tracking-tight drop-shadow-lg"
+                        >
+                            {slides[currentSlide].title}
+                        </motion.h1>
+                        <motion.p
+                            key={`subtitle-${currentSlide}`}
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.4, duration: 0.8 }}
+                            className="text-xl md:text-2xl text-gray-200 mb-8 font-light drop-shadow-md"
+                        >
+                            {slides[currentSlide].subtitle}
+                        </motion.p>
+                        <motion.div
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.6, duration: 0.8 }}
+                        >
+                            <Link to="/equipos">
+                                <Button size="lg" className="bg-halcones-blue text-white hover:bg-blue-600 border-none shadow-lg shadow-blue-500/30">
+                                    Conoce al Equipo <ChevronRight className="ml-2 h-5 w-5" />
+                                </Button>
+                            </Link>
+                        </motion.div>
+                    </div>
+                </div>
+
+                {/* Slider Indicators */}
+                <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-3">
+                    {slides.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setCurrentSlide(index)}
+                            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-halcones-blue w-8' : 'bg-white/30 hover:bg-white/50'
+                                }`}
+                        />
+                    ))}
+                </div>
+            </section>
+
+            {/* Next Match Countdown */}
+            <section className="bg-gradient-to-r from-halcones-blue to-blue-900 py-8 relative overflow-hidden">
+                <div className="absolute inset-0 bg-black/20"></div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="text-center md:text-left">
+                            <h3 className="text-xl md:text-2xl font-bold text-white mb-2">PRÓXIMO PARTIDO</h3>
+                            {nextMatch ? (
+                                <p className="text-blue-200 text-lg">
+                                    {nextMatch.home_team} vs {nextMatch.away_team}
+                                </p>
+                            ) : (
+                                <p className="text-blue-200 text-lg">Buscando próximo encuentro...</p>
+                            )}
+                        </div>
+
+                        {nextMatch && (
+                            <div className="flex gap-4 md:gap-8">
+                                <div className="text-center">
+                                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 min-w-[80px] border border-white/20">
+                                        <span className="block text-3xl font-bold text-white">{timeLeft.days}</span>
+                                        <span className="text-xs uppercase text-blue-200">Días</span>
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 min-w-[80px] border border-white/20">
+                                        <span className="block text-3xl font-bold text-white">{timeLeft.hours}</span>
+                                        <span className="text-xs uppercase text-blue-200">Horas</span>
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 min-w-[80px] border border-white/20">
+                                        <span className="block text-3xl font-bold text-white">{timeLeft.minutes}</span>
+                                        <span className="text-xs uppercase text-blue-200">Min</span>
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 min-w-[80px] border border-white/20">
+                                        <span className="block text-3xl font-bold text-white">{timeLeft.seconds}</span>
+                                        <span className="text-xs uppercase text-blue-200">Seg</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="hidden md:block">
+                            <Link to="/calendario">
+                                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-halcones-blue">
+                                    Ver Calendario
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* News Section */}
+            <section className="py-20 bg-halcones-dark">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-end mb-12">
+                        <div>
+                            <h2 className="text-4xl font-heading font-bold text-white mb-2">ÚLTIMAS NOTICIAS</h2>
+                            <div className="h-1 w-20 bg-halcones-blue rounded shadow-glow"></div>
+                        </div>
+                        <Link to="#" className="hidden md:flex items-center text-halcones-blue font-medium hover:text-blue-400 transition-colors">
+                            Ver todas las noticias <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {newsData.map((news) => (
+                            <article key={news.id} className="group bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-700 hover:border-halcones-blue/50">
+                                <div className="relative h-48 overflow-hidden">
+                                    <img
+                                        src={news.image}
+                                        alt={news.title}
+                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                                    />
+                                    <div className="absolute top-4 left-4 bg-halcones-blue text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
+                                        Noticia
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="flex items-center text-gray-400 text-sm mb-3">
+                                        <Calendar className="h-4 w-4 mr-2 text-halcones-blue" />
+                                        {news.date}
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-halcones-blue transition-colors">
+                                        {news.title}
+                                    </h3>
+                                    <p className="text-gray-400 mb-4 line-clamp-2">
+                                        {news.summary}
+                                    </p>
+                                    <Button variant="ghost" size="sm" className="pl-0 hover:bg-transparent text-halcones-blue hover:text-blue-400">
+                                        Leer más <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+
+                    <div className="mt-8 text-center md:hidden">
+                        <Link to="#" className="inline-flex items-center text-halcones-blue font-medium hover:text-blue-400">
+                            Ver todas las noticias <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="py-20 bg-gradient-to-r from-blue-900 to-halcones-blue text-white relative overflow-hidden">
+                <div className="absolute inset-0 bg-black/20"></div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                    <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 drop-shadow-md">¿QUIERES FORMAR PARTE DEL EQUIPO?</h2>
+                    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto drop-shadow-sm">
+                        Únete a nuestra escuela de hockey y aprende con los mejores entrenadores. Todas las edades y niveles.
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <a
+                            href="https://instagram.com/halcones_torrevieja"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                        >
+                            <Instagram className="w-6 h-6 mr-3" />
+                            Síguenos en Instagram
+                        </a>
+                        <a
+                            href="https://www.youtube.com/@halconestorrevieja"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-red-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                        >
+                            <Youtube className="w-6 h-6 mr-3" />
+                            Canal de YouTube
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+export default Home;
