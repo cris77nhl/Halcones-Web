@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Calendar, ArrowRight, Instagram, Youtube, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/UI/Button';
-import { newsData } from '../data/mockData';
+import { newsData as mockNewsData } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 
 const Home = () => {
@@ -40,6 +40,7 @@ const Home = () => {
     const [nextMatch, setNextMatch] = useState(null);
     const [recentMatches, setRecentMatches] = useState([]);
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const [news, setNews] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -69,6 +70,20 @@ const Home = () => {
 
             if (recentMatchesData) {
                 setRecentMatches(recentMatchesData);
+            }
+
+            // Fetch Latest News
+            const { data: newsData } = await supabase
+                .from('news')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            // Use mock data if no data from Supabase
+            if (newsData && newsData.length > 0) {
+                setNews(newsData);
+            } else {
+                setNews(mockNewsData.slice(0, 3));
             }
         };
 
@@ -258,45 +273,47 @@ const Home = () => {
                             <h2 className="text-4xl font-heading font-bold text-white mb-2">ÚLTIMAS NOTICIAS</h2>
                             <div className="h-1 w-20 bg-halcones-blue rounded shadow-glow"></div>
                         </div>
-                        <Link to="#" className="hidden md:flex items-center text-halcones-blue font-medium hover:text-blue-400 transition-colors">
+                        <Link to="/noticias" className="hidden md:flex items-center text-halcones-blue font-medium hover:text-blue-400 transition-colors">
                             Ver todas las noticias <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {newsData.map((news) => (
-                            <article key={news.id} className="group bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-700 hover:border-halcones-blue/50">
-                                <div className="relative h-48 overflow-hidden">
-                                    <img
-                                        src={news.image}
-                                        alt={news.title}
-                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                                    />
-                                    <div className="absolute top-4 left-4 bg-halcones-blue text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
-                                        Noticia
+                        {news.map((item) => (
+                            <Link key={item.id} to={`/noticias/${item.id}`} className="group">
+                                <article className="bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-700 hover:border-halcones-blue/50 h-full flex flex-col">
+                                    <div className="relative h-48 overflow-hidden">
+                                        <img
+                                            src={item.image_url || 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=800&auto=format&fit=crop'}
+                                            alt={item.title}
+                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                                        />
+                                        <div className="absolute top-4 left-4 bg-halcones-blue text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
+                                            Noticia
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="p-6">
-                                    <div className="flex items-center text-gray-400 text-sm mb-3">
-                                        <Calendar className="h-4 w-4 mr-2 text-halcones-blue" />
-                                        {news.date}
+                                    <div className="p-6 flex-1 flex flex-col">
+                                        <div className="flex items-center text-gray-400 text-sm mb-3">
+                                            <Calendar className="h-4 w-4 mr-2 text-halcones-blue" />
+                                            {new Date(item.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-halcones-blue transition-colors line-clamp-2">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-gray-400 mb-4 line-clamp-2 flex-1">
+                                            {item.content}
+                                        </p>
+                                        <div className="flex items-center text-halcones-blue font-medium">
+                                            Leer más <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                        </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-halcones-blue transition-colors">
-                                        {news.title}
-                                    </h3>
-                                    <p className="text-gray-400 mb-4 line-clamp-2">
-                                        {news.summary}
-                                    </p>
-                                    <Button variant="ghost" size="sm" className="pl-0 hover:bg-transparent text-halcones-blue hover:text-blue-400">
-                                        Leer más <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Button>
-                                </div>
-                            </article>
+                                </article>
+                            </Link>
                         ))}
                     </div>
 
                     <div className="mt-8 text-center md:hidden">
-                        <Link to="#" className="inline-flex items-center text-halcones-blue font-medium hover:text-blue-400">
+                        <Link to="/noticias" className="inline-flex items-center text-halcones-blue font-medium hover:text-blue-400">
                             Ver todas las noticias <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                     </div>
@@ -340,25 +357,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Location Map Section */}
-            <section className="h-96 w-full relative">
-                <iframe
-                    src="https://maps.google.com/maps?q=Pabellon+Cecilio+Gallego+Torrevieja&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Ubicación Halcones Torrevieja"
-                ></iframe>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8 pointer-events-none">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-                        <h3 className="text-2xl font-bold mb-2">VISÍTANOS</h3>
-                        <p className="flex items-center"><span className="mr-2">📍</span> Pabellón Cecilio Gallego</p>
-                    </div>
-                </div>
-            </section>
+
             {/* Sponsors Section */}
             <section className="py-12 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
