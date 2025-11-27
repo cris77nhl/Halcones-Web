@@ -34,7 +34,6 @@ const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [teamLogos, setTeamLogos] = useState({});
     const [selectedCategories, setSelectedCategories] = useState(['Todos']);
 
     const categories = ['Todos', 'Senior', 'Junior', 'Juvenil', 'Infantil', 'Alevín', 'Benjamín'];
@@ -56,21 +55,6 @@ const Calendar = () => {
                     setMatches(matchesData || []);
                 }
 
-                // Fetch teams (safely)
-                const { data: teamsData, error: teamsError } = await supabase
-                    .from('teams')
-                    .select('*');
-
-                if (teamsError) {
-                    console.error('Error fetching teams:', teamsError);
-                } else {
-                    const logoMap = {};
-                    teamsData?.forEach(team => {
-                        logoMap[team.name] = team.logo_url || team.image_url;
-                    });
-                    setTeamLogos(logoMap);
-                }
-
             } catch (error) {
                 console.error('Error in fetchData:', error.message);
             } finally {
@@ -80,17 +64,6 @@ const Calendar = () => {
 
         fetchData();
     }, []);
-
-    const getTeamLogo = (teamName) => {
-        if (!teamName) return null;
-        const normalizedTeamName = teamName.toLowerCase();
-        const exactKey = Object.keys(teamLogos).find(key => key.toLowerCase() === normalizedTeamName);
-        if (exactKey) return teamLogos[exactKey];
-        const partialKey = Object.keys(teamLogos).find(key => normalizedTeamName.includes(key.toLowerCase()));
-        if (partialKey) return teamLogos[partialKey];
-        if (normalizedTeamName.includes('halcones')) return '/logos/halcones.png';
-        return null;
-    };
 
     const toggleCategory = (category) => {
         if (category === 'Todos') {
@@ -260,8 +233,14 @@ const Calendar = () => {
                     <div className="p-6 space-y-4">
                         {selectedMatches.length > 0 ? (
                             selectedMatches.map((match) => {
-                                const homeLogo = getTeamLogo(match.home_team);
-                                const awayLogo = getTeamLogo(match.away_team);
+                                const homeLogo = match.home_team_logo;
+                                const awayLogo = match.away_team_logo;
+
+                                let homeScore = null;
+                                let awayScore = null;
+                                if (match.score && match.score.includes('-')) {
+                                    [homeScore, awayScore] = match.score.split('-').map(s => s.trim());
+                                }
 
                                 return (
                                     <div
@@ -296,16 +275,32 @@ const Calendar = () => {
                                                                 <Shield className="w-8 h-8 text-gray-600 opacity-50" />
                                                             )}
                                                         </div>
-                                                        <span className="text-xs md:text-sm font-bold text-white leading-tight">{match.home_team}</span>
+                                                        <span className={`text-xs md:text-sm font-bold leading-tight ${match.winner_in_draw === 'home' ? 'text-green-400' : 'text-white'}`}>
+                                                            {match.home_team}
+                                                        </span>
                                                     </div>
 
                                                     {/* Score / VS */}
                                                     <div className="flex flex-col items-center justify-center px-2">
-                                                        {match.home_score !== null && match.away_score !== null ? (
-                                                            <div className="bg-black/40 px-4 py-2 rounded-lg border border-white/10 backdrop-blur-sm">
-                                                                <span className="text-xl md:text-2xl font-heading font-bold text-halcones-blue tracking-widest">
-                                                                    {match.home_score}-{match.away_score}
-                                                                </span>
+                                                        {homeScore !== null && awayScore !== null ? (
+                                                            <div className="bg-black/40 px-4 py-2 rounded-lg border border-white/10 backdrop-blur-sm flex items-center gap-2">
+                                                                <div className="flex items-center">
+                                                                    <span className={`text-xl md:text-2xl font-heading font-bold tracking-widest ${match.winner_in_draw === 'home' ? 'text-green-400' : 'text-halcones-blue'}`}>
+                                                                        {homeScore}
+                                                                    </span>
+                                                                    {match.winner_in_draw === 'home' && (
+                                                                        <span className="ml-1 text-[10px] bg-green-500 text-black font-bold px-1 rounded">B</span>
+                                                                    )}
+                                                                </div>
+                                                                <span className="text-gray-400 font-bold">-</span>
+                                                                <div className="flex items-center">
+                                                                    <span className={`text-xl md:text-2xl font-heading font-bold tracking-widest ${match.winner_in_draw === 'away' ? 'text-green-400' : 'text-halcones-blue'}`}>
+                                                                        {awayScore}
+                                                                    </span>
+                                                                    {match.winner_in_draw === 'away' && (
+                                                                        <span className="ml-1 text-[10px] bg-green-500 text-black font-bold px-1 rounded">B</span>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         ) : (
                                                             <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
@@ -323,7 +318,9 @@ const Calendar = () => {
                                                                 <Shield className="w-8 h-8 text-gray-600 opacity-50" />
                                                             )}
                                                         </div>
-                                                        <span className="text-xs md:text-sm font-bold text-white leading-tight">{match.away_team}</span>
+                                                        <span className={`text-xs md:text-sm font-bold leading-tight ${match.winner_in_draw === 'away' ? 'text-green-400' : 'text-white'}`}>
+                                                            {match.away_team}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -366,8 +363,8 @@ const Calendar = () => {
                             key={cat}
                             onClick={() => toggleCategory(cat)}
                             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategories.includes(cat)
-                                    ? 'bg-halcones-blue text-white shadow-lg shadow-blue-500/30'
-                                    : 'bg-halcones-card text-gray-400 hover:bg-white/5 hover:text-white border border-white/10'
+                                ? 'bg-halcones-blue text-white shadow-lg shadow-blue-500/30'
+                                : 'bg-halcones-card text-gray-400 hover:bg-white/5 hover:text-white border border-white/10'
                                 }`}
                         >
                             {cat}

@@ -1,0 +1,21 @@
+INSERT INTO teams (id, name, category, image_url) VALUES
+(gen_random_uuid(), 'ALAS SAGUNTO', 'Rival', '/logos/alas.png'),
+(gen_random_uuid(), 'TITANES ELCHE A', 'Rival', '/logos/titanes.png'),
+(gen_random_uuid(), 'DIABLOS MISLATA A', 'Rival', '/logos/mislata.png'),
+(gen_random_uuid(), 'ORCAS OROPESA A', 'Rival', '/logos/orcas.png'),
+(gen_random_uuid(), 'LLOPS VILA-REAL A', 'Rival', '/logos/villa.png'),
+(gen_random_uuid(), 'CPH SKULLS PLATA', 'Rival', '/logos/skulls.png'),
+(gen_random_uuid(), 'HC CASTELLÓN', 'Rival', '/logos/castellon.png'),
+(gen_random_uuid(), 'ORCAS OROPESA B', 'Rival', '/logos/orcas.png'),
+(gen_random_uuid(), 'LLOPS VILA-REAL B', 'Rival', '/logos/villa.png'),
+(gen_random_uuid(), 'CRACKENS MISLATA', 'Rival', '/logos/crakens.png'),
+(gen_random_uuid(), 'TITANES ELCHE B', 'Rival', '/logos/titanes.png'),
+(gen_random_uuid(), 'DINOS VILAREAL', 'Rival', '/logos/dinos.png'),
+(gen_random_uuid(), 'BERENGUER DALMAU', 'Rival', 'https://via.placeholder.com/150?text=BERENGUER'),
+(gen_random_uuid(), 'LLOPS VILA-REAL C', 'Rival', '/logos/villa.png'),
+(gen_random_uuid(), 'TITANES ELCHE', 'Rival', '/logos/titanes.png'),
+(gen_random_uuid(), 'DIABLOS MISLATA', 'Rival', '/logos/mislata.png'),
+(gen_random_uuid(), 'ORCAS OROPESA', 'Rival', '/logos/orcas.png'),
+(gen_random_uuid(), 'LLOPS VILA-REAL', 'Rival', '/logos/villa.png'),
+(gen_random_uuid(), 'CPH SKULLS ALMASSERA', 'Rival', '/logos/skulls.png')
+ON CONFLICT (name) DO NOTHING;

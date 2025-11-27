@@ -1,41 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Calendar, ArrowRight, Instagram, Youtube, MapPin } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Calendar, ArrowRight, Instagram, Youtube, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/UI/Button';
 import { newsData as mockNewsData } from '../data/mockData';
 import { supabase } from '../lib/supabase';
+import TopPlayers from '../components/Home/TopPlayers';
 
 const Home = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    const slides = [
+    // Generate random images for the slider
+    const [slides, setSlides] = useState([
         {
             id: 1,
-            image: '/img/senior.jfif',
+            image: '/img/senior.jfif', // Keep one default or random? User said "random from img2". Let's make all random.
             title: 'PASIÓN POR EL HOCKEY',
             subtitle: 'Únete a la familia de los Halcones Torrevieja',
         },
         {
             id: 2,
-            image: 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1920&auto=format&fit=crop',
+            image: '/img2/halcones10.jpeg',
             title: 'ESCUELA DE CAMPEONES',
             subtitle: 'Formando jugadores desde la base',
         },
         {
             id: 3,
-            image: 'https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=1920&auto=format&fit=crop',
+            image: '/img2/halcones22.jpeg',
             title: 'COMPETICIÓN Y DIVERSIÓN',
             subtitle: 'Vive la emoción de cada partido',
         },
-    ];
+    ]);
+
+    useEffect(() => {
+        const TOTAL_IMAGES = 32;
+        const getRandomImages = (count) => {
+            const images = [];
+            const usedIndices = new Set();
+            while (images.length < count) {
+                const randomIndex = Math.floor(Math.random() * TOTAL_IMAGES) + 1;
+                if (!usedIndices.has(randomIndex)) {
+                    usedIndices.add(randomIndex);
+                    images.push(`/img2/halcones${randomIndex}.jpeg`);
+                }
+            }
+            return images;
+        };
+
+        const randomImages = getRandomImages(3);
+
+        setSlides(prev => [
+            { ...prev[0], image: randomImages[0] },
+            { ...prev[1], image: randomImages[1] },
+            { ...prev[2], image: randomImages[2] },
+        ]);
+    }, []);
+
+    // ... (rest of the component)
+
+
 
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 5000);
+        }, 8000); // Increased to 8 seconds
         return () => clearInterval(timer);
     }, [slides.length]);
+
+    // ... (existing code)
+
+    useEffect(() => {
+        const TOTAL_IMAGES = 32;
+        const getRandomImages = (count) => {
+            const images = [];
+            const usedIndices = new Set();
+            while (images.length < count) {
+                const randomIndex = Math.floor(Math.random() * TOTAL_IMAGES) + 1;
+                if (!usedIndices.has(randomIndex)) {
+                    usedIndices.add(randomIndex);
+                    images.push(`/img2/halcones${randomIndex}.jpeg`);
+                }
+            }
+            return images;
+        };
+
+        const randomImages = getRandomImages(3);
+
+        // Preload images
+        randomImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+
+        setSlides(prev => [
+            { ...prev[0], image: randomImages[0] },
+            { ...prev[1], image: randomImages[1] },
+            { ...prev[2], image: randomImages[2] },
+        ]);
+    }, []);
+
+    // ... (existing code)
+
+    // In the JSX return:
+    // transition={{ duration: 0.5 }}
 
     const [nextMatch, setNextMatch] = useState(null);
     const [recentMatches, setRecentMatches] = useState([]);
@@ -123,7 +190,7 @@ const Home = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 1 }}
+                        transition={{ duration: 0.5 }}
                         className="absolute inset-0"
                     >
                         <div
@@ -246,24 +313,75 @@ const Home = () => {
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <h2 className="text-3xl font-heading font-bold text-white mb-8 text-center">ÚLTIMOS RESULTADOS</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {recentMatches.map((match) => (
-                                    <div key={match.id} className="bg-halcones-card rounded-lg p-4 border border-white/10 shadow-lg">
-                                        <div className="text-xs text-gray-400 mb-2 text-center">{match.date} - {match.category}</div>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className={`font-bold ${match.home_score > match.away_score ? 'text-green-400' : 'text-white'}`}>{match.home_team}</span>
-                                            <span className="text-xl font-bold text-white">{match.home_score}</span>
+                                {recentMatches.map((match) => {
+                                    let homeScore = '-';
+                                    let awayScore = '-';
+                                    if (match.score && match.score.includes('-')) {
+                                        [homeScore, awayScore] = match.score.split('-').map(s => s.trim());
+                                    }
+
+                                    return (
+                                        <div key={match.id} className="bg-halcones-card rounded-lg p-4 border border-white/10 shadow-lg hover:border-halcones-blue/30 transition-all">
+                                            <div className="text-xs text-gray-400 mb-3 text-center font-medium uppercase tracking-wider">{match.date} - {match.category}</div>
+
+                                            {/* Home Team */}
+                                            <div className="flex justify-between items-center mb-3">
+                                                <div className="flex items-center gap-3 overflow-hidden">
+                                                    <div className="w-8 h-8 flex-shrink-0 bg-white/5 rounded-full p-1 flex items-center justify-center">
+                                                        {match.home_team_logo ? (
+                                                            <img src={match.home_team_logo} alt={match.home_team} className="w-full h-full object-contain" />
+                                                        ) : (
+                                                            <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
+                                                        )}
+                                                    </div>
+                                                    <span className={`font-bold text-sm truncate ${match.winner_in_draw === 'home' ? 'text-green-400' : 'text-white'}`}>
+                                                        {match.home_team}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <span className={`text-xl font-bold ${match.winner_in_draw === 'home' ? 'text-green-400' : 'text-white'}`}>
+                                                        {homeScore}
+                                                    </span>
+                                                    {match.winner_in_draw === 'home' && (
+                                                        <span className="ml-1 text-[10px] bg-green-500 text-black font-bold px-1 rounded">B</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Away Team */}
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex items-center gap-3 overflow-hidden">
+                                                    <div className="w-8 h-8 flex-shrink-0 bg-white/5 rounded-full p-1 flex items-center justify-center">
+                                                        {match.away_team_logo ? (
+                                                            <img src={match.away_team_logo} alt={match.away_team} className="w-full h-full object-contain" />
+                                                        ) : (
+                                                            <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
+                                                        )}
+                                                    </div>
+                                                    <span className={`font-bold text-sm truncate ${match.winner_in_draw === 'away' ? 'text-green-400' : 'text-white'}`}>
+                                                        {match.away_team}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center">
+                                                    <span className={`text-xl font-bold ${match.winner_in_draw === 'away' ? 'text-green-400' : 'text-white'}`}>
+                                                        {awayScore}
+                                                    </span>
+                                                    {match.winner_in_draw === 'away' && (
+                                                        <span className="ml-1 text-[10px] bg-green-500 text-black font-bold px-1 rounded">B</span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className={`font-bold ${match.away_score > match.home_score ? 'text-green-400' : 'text-white'}`}>{match.away_team}</span>
-                                            <span className="text-xl font-bold text-white">{match.away_score}</span>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </section>
                 )
             }
+
+            {/* Top Players Section */}
+            <TopPlayers />
 
             {/* News Section */}
             <section className="py-20 bg-halcones-dark">
@@ -324,34 +442,43 @@ const Home = () => {
             <section className="py-20 bg-gray-900">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-heading font-bold text-white mb-8 text-center">GALERÍA</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
-                            <img
-                                src="https://images.unsplash.com/photo-1580748141549-71748dbe0bdc?q=80&w=800&auto=format&fit=crop"
-                                alt="Gallery 1"
-                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
-                        </div>
-                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
-                            <img
-                                src="https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=800&auto=format&fit=crop"
-                                alt="Gallery 2"
-                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
-                        </div>
-                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
-                            <img
-                                src="https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=800&auto=format&fit=crop"
-                                alt="Gallery 3"
-                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
-                        </div>
-                        <div className="relative h-48 md:h-64 overflow-hidden rounded-lg group">
-                            <img
-                                src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop"
-                                alt="Gallery 4"
-                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
+                    <div className="relative group">
+                        {/* Navigation Buttons */}
+                        <button
+                            onClick={() => {
+                                const container = document.getElementById('gallery-container');
+                                container.scrollBy({ left: -300, behavior: 'smooth' });
+                            }}
+                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-halcones-blue text-white p-3 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 -ml-4 md:-ml-8"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                const container = document.getElementById('gallery-container');
+                                container.scrollBy({ left: 300, behavior: 'smooth' });
+                            }}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-halcones-blue text-white p-3 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 -mr-4 md:-mr-8"
+                        >
+                            <ChevronRight className="w-6 h-6" />
+                        </button>
+
+                        {/* Gallery Container */}
+                        <div
+                            id="gallery-container"
+                            className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x snap-mandatory"
+                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        >
+                            {Array.from({ length: 32 }, (_, i) => i + 1).map((num) => (
+                                <div key={num} className="flex-none w-72 h-48 md:h-64 relative overflow-hidden rounded-lg group/item snap-center">
+                                    <img
+                                        src={`/img2/halcones${num}.jpeg`}
+                                        alt={`Galería Halcones ${num}`}
+                                        className="w-full h-full object-cover transform group-hover/item:scale-110 transition-transform duration-500"
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
