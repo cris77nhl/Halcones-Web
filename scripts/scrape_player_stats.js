@@ -274,7 +274,7 @@ function normalizeName(name) {
         }))
         .sort((a, b) => b.points - a.points);
 
-    await fs.writeFile('src/data/player_stats.json', JSON.stringify(aggregatedPlayers, null, 2));
+    await fs.writeFile('../src/data/player_stats.json', JSON.stringify(aggregatedPlayers, null, 2));
     console.log(`\nSaved ${aggregatedPlayers.length} aggregated players to src/data/player_stats.json`);
 
     await browser.close();
