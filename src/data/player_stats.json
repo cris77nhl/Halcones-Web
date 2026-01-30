@@ -1,0 +1,520 @@
+[
+  {
+    "name": "CALDERÓN ÁLVAREZ LUIS",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10000244.png",
+    "matchesPlayed": 27,
+    "points": 37,
+    "goals": 23,
+    "assists": 14,
+    "leagues": [
+      "Senior",
+      "Junior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "SALINAS DIAZ PABLO",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/29127.png",
+    "matchesPlayed": 21,
+    "points": 33,
+    "goals": 21,
+    "assists": 12,
+    "leagues": [
+      "Liga Élite Infantil",
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "RICO SALINAS LUCA",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/26224.png",
+    "matchesPlayed": 21,
+    "points": 32,
+    "goals": 22,
+    "assists": 10,
+    "leagues": [
+      "Liga Élite Infantil",
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "DOMENE PEREZ MANUEL",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6576.png",
+    "matchesPlayed": 27,
+    "points": 32,
+    "goals": 26,
+    "assists": 6,
+    "leagues": [
+      "Senior",
+      "Junior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "POBLET SIMON EVARISTO",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/32398.png",
+    "matchesPlayed": 22,
+    "points": 30,
+    "goals": 23,
+    "assists": 7,
+    "leagues": [
+      "Liga Élite Infantil",
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "SEGURA MIRAS JAVIER",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/11758.png",
+    "matchesPlayed": 27,
+    "points": 29,
+    "goals": 20,
+    "assists": 9,
+    "leagues": [
+      "Senior",
+      "Junior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "SOLLA JOHANSEN NEHUEN",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6873.png",
+    "matchesPlayed": 14,
+    "points": 29,
+    "goals": 19,
+    "assists": 10,
+    "leagues": [
+      "Junior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "MUNAR DEL REY IGNACIO",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/4861.png",
+    "matchesPlayed": 14,
+    "points": 26,
+    "goals": 19,
+    "assists": 7,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "PÉREZ ANTÓN HÉCTOR",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/11718.png",
+    "matchesPlayed": 17,
+    "points": 21,
+    "goals": 17,
+    "assists": 4,
+    "leagues": [
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "HERRANZ RODRIGUEZ ANDER",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/14752.png",
+    "matchesPlayed": 13,
+    "points": 19,
+    "goals": 8,
+    "assists": 11,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "ALVARADO ESTEBAN GINÉS",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10001008.png",
+    "matchesPlayed": 17,
+    "points": 19,
+    "goals": 15,
+    "assists": 4,
+    "leagues": [
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "CUENDIAS SOTO ÁNGEL",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/5526.png",
+    "matchesPlayed": 16,
+    "points": 18,
+    "goals": 11,
+    "assists": 7,
+    "leagues": [
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "HARKUSHA YURII",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/29128.png",
+    "matchesPlayed": 15,
+    "points": 17,
+    "goals": 12,
+    "assists": 5,
+    "leagues": [
+      "Liga Élite Infantil",
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "YAKIMOV VICTOR",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6869.png",
+    "matchesPlayed": 18,
+    "points": 17,
+    "goals": 12,
+    "assists": 5,
+    "leagues": [
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "TALLON JIMENEZ PEDRO",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/17473.png",
+    "matchesPlayed": 15,
+    "points": 16,
+    "goals": 8,
+    "assists": 8,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "MADER CHRISTIAN",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/14024.png",
+    "matchesPlayed": 14,
+    "points": 15,
+    "goals": 9,
+    "assists": 6,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "PEREZ ANTON MARCOS",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/28244.png",
+    "matchesPlayed": 16,
+    "points": 15,
+    "goals": 10,
+    "assists": 5,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior",
+      "Junior"
+    ]
+  },
+  {
+    "name": "HERNANDO MOLINA VEGA",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10000246.png",
+    "matchesPlayed": 20,
+    "points": 11,
+    "goals": 7,
+    "assists": 4,
+    "leagues": [
+      "Senior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "SOTO SANCHEZ CRISTOBAL",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/14151.png",
+    "matchesPlayed": 15,
+    "points": 10,
+    "goals": 6,
+    "assists": 4,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "SOLLA QUIMEY",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6874.png",
+    "matchesPlayed": 17,
+    "points": 10,
+    "goals": 4,
+    "assists": 6,
+    "leagues": [
+      "Juvenil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "GUIRADO SIERRA PABLO",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/11761.png",
+    "matchesPlayed": 8,
+    "points": 9,
+    "goals": 7,
+    "assists": 2,
+    "leagues": [
+      "Senior"
+    ]
+  },
+  {
+    "name": "SÁNCHEZ OJEDA SERGIO",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/23920.png",
+    "matchesPlayed": 11,
+    "points": 8,
+    "goals": 5,
+    "assists": 3,
+    "leagues": [
+      "Liga Élite Infantil",
+      "Infantil"
+    ]
+  },
+  {
+    "name": "SALINAS DIAZ MIGUEL-ANGEL",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/9704.png",
+    "matchesPlayed": 7,
+    "points": 8,
+    "goals": 6,
+    "assists": 2,
+    "leagues": [
+      "Junior"
+    ]
+  },
+  {
+    "name": "GARCIA AGUIRRE UNAI",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/17475.png",
+    "matchesPlayed": 12,
+    "points": 7,
+    "goals": 6,
+    "assists": 1,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "RIBAS PEY XAVIER",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/5536.png",
+    "matchesPlayed": 7,
+    "points": 7,
+    "goals": 2,
+    "assists": 5,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "WANGER BELTRAN MARLEN",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/11531.png",
+    "matchesPlayed": 4,
+    "points": 7,
+    "goals": 2,
+    "assists": 5,
+    "leagues": [
+      "Senior"
+    ]
+  },
+  {
+    "name": "TOVAR MARTINEZ SAUL",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/9855.png",
+    "matchesPlayed": 18,
+    "points": 7,
+    "goals": 2,
+    "assists": 5,
+    "leagues": [
+      "Junior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "CALDERÓN ÁLVAREZ PABLO",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10001007.png",
+    "matchesPlayed": 5,
+    "points": 7,
+    "goals": 5,
+    "assists": 2,
+    "leagues": [
+      "Alevín"
+    ]
+  },
+  {
+    "name": "ZURDO GRACIA DIEGO",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10217.png",
+    "matchesPlayed": 7,
+    "points": 6,
+    "goals": 5,
+    "assists": 1,
+    "leagues": [
+      "Infantil"
+    ]
+  },
+  {
+    "name": "KISS RICHÁRD ATTILA",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/9744.png",
+    "matchesPlayed": 6,
+    "points": 4,
+    "goals": 3,
+    "assists": 1,
+    "leagues": [
+      "Senior"
+    ]
+  },
+  {
+    "name": "PEREZ ANTON ELENA",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10000566.png",
+    "matchesPlayed": 21,
+    "points": 4,
+    "goals": 3,
+    "assists": 1,
+    "leagues": [
+      "Senior",
+      "Juvenil"
+    ]
+  },
+  {
+    "name": "BOWEN MORTIMER DANIEL JOHN",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6842.png",
+    "matchesPlayed": 7,
+    "points": 4,
+    "goals": 4,
+    "assists": 0,
+    "leagues": [
+      "Infantil"
+    ]
+  },
+  {
+    "name": "PORUSHCHENKO MAKSYM",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10000674.png",
+    "matchesPlayed": 7,
+    "points": 4,
+    "goals": 3,
+    "assists": 1,
+    "leagues": [
+      "Infantil"
+    ]
+  },
+  {
+    "name": "SOLLA TAHIEL AUKAN",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/9574.png",
+    "matchesPlayed": 5,
+    "points": 4,
+    "goals": 2,
+    "assists": 2,
+    "leagues": [
+      "Alevín"
+    ]
+  },
+  {
+    "name": "MORALES CORRAL GERARD",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/5622.png",
+    "matchesPlayed": 5,
+    "points": 3,
+    "goals": 3,
+    "assists": 0,
+    "leagues": [
+      "Liga Plata Masculina"
+    ]
+  },
+  {
+    "name": "CASTILLO MUÑOZ DE LA NAVA ALEJANDRO",
+    "photo": "https://sidgad.cloud/rfep/images//fichas/5550.png",
+    "matchesPlayed": 7,
+    "points": 3,
+    "goals": 3,
+    "assists": 0,
+    "leagues": [
+      "Liga Plata Masculina",
+      "Senior"
+    ]
+  },
+  {
+    "name": "HERNÁNDEZ BARRAQUEL ADRIÁN",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/5477.png",
+    "matchesPlayed": 2,
+    "points": 3,
+    "goals": 1,
+    "assists": 2,
+    "leagues": [
+      "Senior"
+    ]
+  },
+  {
+    "name": "GARCÍA ROMERO JORGE",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/11900.png",
+    "matchesPlayed": 4,
+    "points": 3,
+    "goals": 3,
+    "assists": 0,
+    "leagues": [
+      "Alevín"
+    ]
+  },
+  {
+    "name": "TEROL DONIS ANDREA",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6447.png",
+    "matchesPlayed": 3,
+    "points": 2,
+    "goals": 2,
+    "assists": 0,
+    "leagues": [
+      "Senior"
+    ]
+  },
+  {
+    "name": "FORTES LIMA DILARA",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/6840.png",
+    "matchesPlayed": 7,
+    "points": 2,
+    "goals": 1,
+    "assists": 1,
+    "leagues": [
+      "Infantil"
+    ]
+  },
+  {
+    "name": "KOMARISTYY DANILA",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10419.png",
+    "matchesPlayed": 4,
+    "points": 2,
+    "goals": 2,
+    "assists": 0,
+    "leagues": [
+      "Alevín"
+    ]
+  },
+  {
+    "name": "CATALAN MENA HECTOR",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10001160.png",
+    "matchesPlayed": 2,
+    "points": 1,
+    "goals": 1,
+    "assists": 0,
+    "leagues": [
+      "Senior"
+    ]
+  },
+  {
+    "name": "TOVAR MARTINEZ SALVADOR",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/9857.png",
+    "matchesPlayed": 7,
+    "points": 1,
+    "goals": 1,
+    "assists": 0,
+    "leagues": [
+      "Infantil"
+    ]
+  },
+  {
+    "name": "HAGELKVIST COLIN ERIC LENNART",
+    "photo": "https://sidgad.cloud/fpcv/images//fichas/10000828.png",
+    "matchesPlayed": 4,
+    "points": 1,
+    "goals": 1,
+    "assists": 0,
+    "leagues": [
+      "Alevín"
+    ]
+  }
+]
