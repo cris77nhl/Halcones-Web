@@ -15,11 +15,22 @@ const createSupabaseClient = () => {
     console.error('Supabase credentials missing or invalid! Check your .env file.');
 
     // Return a mock client to prevent app crash
+    const createMockBuilder = (data = []) => {
+        const builder = {
+            select: () => builder,
+            gte: () => builder,
+            lt: () => builder,
+            eq: () => builder,
+            order: () => builder,
+            limit: () => builder,
+            single: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+            then: (resolve) => resolve({ data: [], error: { message: 'Supabase not configured' } })
+        };
+        return builder;
+    };
+
     return {
-        from: () => ({
-            select: () => Promise.resolve({ data: [], error: { message: 'Supabase not configured' } }),
-            insert: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } })
-        }),
+        from: () => createMockBuilder(),
         auth: {
             signInWithPassword: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
             onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } })

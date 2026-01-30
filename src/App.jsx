@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
+import ScrollToTop from './components/Layout/ScrollToTop';
 import Home from './pages/Home';
 import Teams from './pages/Teams';
 import Calendar from './pages/Calendar';
@@ -14,6 +15,7 @@ import CreateNews from './pages/CreateNews';
 function App() {
     return (
         <Router>
+            <ScrollToTop />
             <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900 font-sans">
                 <Navbar />
                 <main className="flex-grow">

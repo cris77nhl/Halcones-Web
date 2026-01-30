@@ -146,11 +146,19 @@ const Home = () => {
                 .order('created_at', { ascending: false })
                 .limit(3);
 
+            // Helper to add random images
+            const addRandomImages = (items) => {
+                return items.map(item => ({
+                    ...item,
+                    displayImage: `/img2/halcones${Math.floor(Math.random() * 32) + 1}.jpeg`
+                }));
+            };
+
             // Use mock data if no data from Supabase
             if (newsData && newsData.length > 0) {
-                setNews(newsData);
+                setNews(addRandomImages(newsData));
             } else {
-                setNews(mockNewsData.slice(0, 3));
+                setNews(addRandomImages(mockNewsData.slice(0, 3)));
             }
         };
 
@@ -402,7 +410,7 @@ const Home = () => {
                                 <article className="bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-700 hover:border-halcones-blue/50 h-full flex flex-col">
                                     <div className="relative h-48 overflow-hidden">
                                         <img
-                                            src={item.image_url || 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=800&auto=format&fit=crop'}
+                                            src={item.displayImage}
                                             alt={item.title}
                                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                                         />

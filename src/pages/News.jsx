@@ -20,6 +20,13 @@ const News = () => {
     }, []);
 
     const fetchNews = async () => {
+        const addRandomImages = (items) => {
+            return items.map(item => ({
+                ...item,
+                displayImage: `/img2/halcones${Math.floor(Math.random() * 32) + 1}.jpeg`
+            }));
+        };
+
         try {
             const { data, error } = await supabase
                 .from('news')
@@ -27,12 +34,16 @@ const News = () => {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            // Use mock data if no data from Supabase
-            setNews(data && data.length > 0 ? data : mockNewsData);
+
+            if (data && data.length > 0) {
+                setNews(addRandomImages(data));
+            } else {
+                setNews(addRandomImages(mockNewsData));
+            }
         } catch (error) {
             console.error('Error fetching news:', error.message);
             // Use mock data on error
-            setNews(mockNewsData);
+            setNews(addRandomImages(mockNewsData));
         } finally {
             setLoading(false);
         }
@@ -76,7 +87,7 @@ const News = () => {
                                 <article className="bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-700 hover:border-halcones-blue/50 h-full flex flex-col">
                                     <div className="relative h-48 overflow-hidden">
                                         <img
-                                            src={item.image_url || 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=800&auto=format&fit=crop'}
+                                            src={item.displayImage}
                                             alt={item.title}
                                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                         />
