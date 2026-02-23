@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Trophy, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, Trophy, Loader2, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import Modal from '../components/UI/Modal';
+import PlayerStatsModal from '../components/Teams/PlayerStatsModal';
 import { supabase } from '../lib/supabase';
 import { clsx } from 'clsx';
 
@@ -45,6 +46,10 @@ const Teams = () => {
     const [loading, setLoading] = useState(true);
     const [players, setPlayers] = useState([]);
     const [loadingPlayers, setLoadingPlayers] = useState(false);
+
+    // Stats Modal State
+    const [selectedPlayerName, setSelectedPlayerName] = useState(null);
+    const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
 
     // Carousel state: category -> current image index
     const [carouselIndices, setCarouselIndices] = useState({});
@@ -145,6 +150,11 @@ const Teams = () => {
         setSelectedCategoryTeams(null);
         setActiveTeam(null);
         setPlayers([]);
+    };
+
+    const handlePlayerClick = (playerName) => {
+        setSelectedPlayerName(playerName);
+        setIsStatsModalOpen(true);
     };
 
     if (loading) {
@@ -265,17 +275,24 @@ const Teams = () => {
                                 ) : players && players.length > 0 ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {players.map((player) => (
-                                            <div key={player.id} className="flex items-center p-3 bg-halcones-dark rounded-lg border border-white/10 hover:border-halcones-blue/30 transition-colors">
-                                                <div className="h-12 w-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 font-bold text-lg mr-4 overflow-hidden border border-white/5">
+                                            <div
+                                                key={player.id}
+                                                onClick={() => handlePlayerClick(player.name)}
+                                                className="flex items-center p-3 bg-halcones-dark rounded-lg border border-white/10 hover:border-halcones-blue/50 hover:bg-white/5 transition-all cursor-pointer group/player"
+                                            >
+                                                <div className="h-12 w-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 font-bold text-lg mr-4 overflow-hidden border border-white/5 group-hover/player:border-halcones-blue/50 transition-colors">
                                                     {player.photo_url ? (
                                                         <img src={player.photo_url} alt={player.name} className="w-full h-full object-cover" />
                                                     ) : (
                                                         player.number
                                                     )}
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-white">{player.name}</p>
+                                                <div className="flex-1">
+                                                    <p className="font-bold text-white group-hover/player:text-halcones-blue transition-colors">{player.name}</p>
                                                     <p className="text-sm text-gray-400">{player.position}</p>
+                                                </div>
+                                                <div className="text-halcones-blue opacity-0 group-hover/player:opacity-100 transition-opacity">
+                                                    <Zap className="w-4 h-4" />
                                                 </div>
                                             </div>
                                         ))}
@@ -287,6 +304,12 @@ const Teams = () => {
                         </div>
                     )}
                 </Modal>
+
+                <PlayerStatsModal
+                    isOpen={isStatsModalOpen}
+                    onClose={() => setIsStatsModalOpen(false)}
+                    playerName={selectedPlayerName}
+                />
             </div>
         </div>
     );

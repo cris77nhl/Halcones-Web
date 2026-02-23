@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Button from '../components/UI/Button';
 import { newsData as mockNewsData } from '../data/mockData';
 import { supabase } from '../lib/supabase';
+import { getNewsImage } from '../lib/imageUtils';
 import TopPlayers from '../components/Home/TopPlayers';
 
 const Home = () => {
@@ -146,19 +147,19 @@ const Home = () => {
                 .order('created_at', { ascending: false })
                 .limit(3);
 
-            // Helper to add random images
-            const addRandomImages = (items) => {
+            // Helper to add deterministic images
+            const addImages = (items) => {
                 return items.map(item => ({
                     ...item,
-                    displayImage: `/img2/halcones${Math.floor(Math.random() * 32) + 1}.jpeg`
+                    displayImage: getNewsImage(item.id)
                 }));
             };
 
             // Use mock data if no data from Supabase
             if (newsData && newsData.length > 0) {
-                setNews(addRandomImages(newsData));
+                setNews(addImages(newsData));
             } else {
-                setNews(addRandomImages(mockNewsData.slice(0, 3)));
+                setNews(addImages(mockNewsData.slice(0, 3)));
             }
         };
 
@@ -169,7 +170,8 @@ const Home = () => {
         if (!nextMatch) return;
 
         const timer = setInterval(() => {
-            const matchDate = new Date(`${nextMatch.date}T${nextMatch.time}`);
+            const matchTime = nextMatch.time === 'TBD' ? '00:00' : nextMatch.time;
+            const matchDate = new Date(`${nextMatch.date}T${matchTime}`);
             const now = new Date();
             const difference = matchDate - now;
 
@@ -264,9 +266,21 @@ const Home = () => {
                         <div className="text-center md:text-left">
                             <h3 className="text-xl md:text-2xl font-bold text-white mb-2">PRÓXIMO PARTIDO</h3>
                             {nextMatch ? (
-                                <p className="text-blue-200 text-lg">
-                                    {nextMatch.home_team} vs {nextMatch.away_team}
-                                </p>
+                                <div className="space-y-1">
+                                    <p className="text-blue-200 text-lg">
+                                        {nextMatch.home_team} vs {nextMatch.away_team}
+                                    </p>
+                                    {nextMatch.time === 'TBD' && (
+                                        <p className="text-white text-sm font-bold opacity-90">
+                                            Hora por decidir - Faltan {(() => {
+                                                const matchDate = new Date(`${nextMatch.date}T00:00`);
+                                                const now = new Date();
+                                                const diffMs = matchDate - now;
+                                                return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60)));
+                                            })()}h
+                                        </p>
+                                    )}
+                                </div>
                             ) : (
                                 <p className="text-blue-200 text-lg">Buscando próximo encuentro...</p>
                             )}

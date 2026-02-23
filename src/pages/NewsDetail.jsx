@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, User, ArrowLeft, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { getNewsImage } from '../lib/imageUtils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Button from '../components/UI/Button';
@@ -14,6 +15,11 @@ const NewsDetail = () => {
 
     useEffect(() => {
         const fetchNewsDetail = async () => {
+            const addImage = (item) => ({
+                ...item,
+                displayImage: getNewsImage(item.id)
+            });
+
             try {
                 const { data, error } = await supabase
                     .from('news')
@@ -22,12 +28,14 @@ const NewsDetail = () => {
                     .single();
 
                 if (error) throw error;
-                setNews(data);
+                setNews(addImage(data));
             } catch (error) {
                 console.error('Error fetching news detail:', error.message);
-                // Fallback to mock data
-                const mockNews = mockNewsData.find(item => item.id === id);
-                if (mockNews) setNews(mockNews);
+                // Fallback to mock data - compare as strings to handle both numeric and UUID IDs
+                const mockNews = mockNewsData.find(item => String(item.id) === String(id));
+                if (mockNews) {
+                    setNews(addImage(mockNews));
+                }
             } finally {
                 setLoading(false);
             }
@@ -86,7 +94,7 @@ const NewsDetail = () => {
 
                 <div className="relative h-[400px] w-full rounded-xl overflow-hidden mb-12 shadow-2xl border border-white/10">
                     <img
-                        src={news.image_url || 'https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1920&auto=format&fit=crop'}
+                        src={news.displayImage}
                         alt={news.title}
                         className="w-full h-full object-cover"
                     />

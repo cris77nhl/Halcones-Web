@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     Calendar as CalendarIcon,
     MapPin,
@@ -85,17 +85,26 @@ const Calendar = () => {
         });
     };
 
-    const filteredMatches = matches.filter(match => {
-        if (selectedCategories.includes('Todos')) return true;
-        return selectedCategories.includes(match.category);
-    });
+    // Memoize filtered matches to avoid recalculating on every render
+    const filteredMatches = useMemo(() => {
+        if (selectedCategories.includes('Todos')) {
+            return matches;
+        }
+        return matches.filter(match => selectedCategories.includes(match.category));
+    }, [matches, selectedCategories]);
 
-    const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-    const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+    const nextMonth = useCallback(() => setCurrentMonth(addMonths(currentMonth, 1)), [currentMonth]);
+    const prevMonth = useCallback(() => setCurrentMonth(subMonths(currentMonth, 1)), [currentMonth]);
 
-    const onDateClick = (day) => {
+    const onDateClick = useCallback((day) => {
         setSelectedDate(day);
-    };
+    }, []);
+
+    // Memoize selected date matches at component level (not inside render function)
+    const selectedDateMatches = useMemo(() => {
+        if (!selectedDate) return [];
+        return filteredMatches.filter(match => isSameDay(parseISO(match.date), selectedDate));
+    }, [selectedDate, filteredMatches]);
 
     const renderHeader = () => {
         return (
@@ -115,13 +124,20 @@ const Calendar = () => {
 
     const renderDays = () => {
         const days = [];
-        const dateFormat = "eeee";
         const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
 
         for (let i = 0; i < 7; i++) {
+            const dayDate = addDays(startDate, i);
+            const dayFull = format(dayDate, "eeee", { locale: es });
+            const dayInitial = dayFull.charAt(0).toUpperCase();
+
+            // Handle Wednesday (miércoles) as 'X'
+            const mobileInitial = dayFull.toLowerCase().includes('miércoles') ? 'X' : dayInitial;
+
             days.push(
                 <div key={i} className="text-center text-sm font-medium text-gray-400 uppercase py-2">
-                    {format(addDays(startDate, i), dateFormat, { locale: es })}
+                    <span className="hidden md:inline">{dayFull}</span>
+                    <span className="md:hidden">{mobileInitial}</span>
                 </div>
             );
         }
@@ -198,8 +214,8 @@ const Calendar = () => {
     const renderSelectedDateDetails = () => {
         if (!selectedDate) return null;
 
-        // Use filteredMatches here too so the details view respects the filter
-        const selectedMatches = filteredMatches.filter(match => isSameDay(parseISO(match.date), selectedDate));
+        // Use the memoized selectedDateMatches from component level
+        const selectedMatches = selectedDateMatches;
 
         return (
             <motion.div
@@ -253,8 +269,44 @@ const Calendar = () => {
                                                 <div className="text-center">
                                                     <span className="block text-xs font-bold uppercase tracking-wider text-halcones-blue mb-1">{match.category}</span>
                                                     <div className="flex items-center justify-center gap-2 md:flex-col md:gap-0">
-                                                        <Clock className="w-4 h-4 text-gray-400 md:mb-1" />
-                                                        <span className="text-lg font-bold text-white">{match.time}</span>
+                                                        {(() => {
+                                                            const matchTime = match.time === 'TBD' ? '00:00' : match.time;
+                                                            const matchDate = new Date(`${match.date}T${matchTime}`);
+                                                            const now = new Date();
+                                                            const diffMs = matchDate - now;
+
+                                                            if (diffMs < 0) {
+                                                                if (match.time === 'TBD') return null;
+                                                                return (
+                                                                    <>
+                                                                        <Clock className="w-4 h-4 text-gray-400 md:mb-1" />
+                                                                        <span className="text-lg font-bold text-white">{match.time}</span>
+                                                                    </>
+                                                                );
+                                                            }
+
+                                                            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                                                            const diffMins = Math.floor((diffMs / (1000 * 60)) % 60);
+
+                                                            if (match.time === 'TBD') return null;
+
+                                                            if (diffHours >= 24) {
+                                                                const diffDays = Math.floor(diffHours / 24);
+                                                                return (
+                                                                    <>
+                                                                        <Clock className="w-4 h-4 text-gray-400 md:mb-1" />
+                                                                        <span className="text-lg font-bold text-white">{match.time} (En {diffDays}d)</span>
+                                                                    </>
+                                                                );
+                                                            }
+
+                                                            return (
+                                                                <>
+                                                                    <Clock className="w-4 h-4 text-gray-400 md:mb-1" />
+                                                                    <span className="text-lg font-bold text-white">{match.time} (En {diffHours}h {diffMins}m)</span>
+                                                                </>
+                                                            );
+                                                        })()}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center text-gray-400 text-xs text-right md:text-center">

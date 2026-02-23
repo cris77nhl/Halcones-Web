@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, ArrowRight, Plus, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { getNewsImage } from '../lib/imageUtils';
 import Button from '../components/UI/Button';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -20,10 +21,10 @@ const News = () => {
     }, []);
 
     const fetchNews = async () => {
-        const addRandomImages = (items) => {
+        const addImages = (items) => {
             return items.map(item => ({
                 ...item,
-                displayImage: `/img2/halcones${Math.floor(Math.random() * 32) + 1}.jpeg`
+                displayImage: getNewsImage(item.id)
             }));
         };
 
@@ -36,14 +37,14 @@ const News = () => {
             if (error) throw error;
 
             if (data && data.length > 0) {
-                setNews(addRandomImages(data));
+                setNews(addImages(data));
             } else {
-                setNews(addRandomImages(mockNewsData));
+                setNews(addImages(mockNewsData));
             }
         } catch (error) {
             console.error('Error fetching news:', error.message);
             // Use mock data on error
-            setNews(addRandomImages(mockNewsData));
+            setNews(addImages(mockNewsData));
         } finally {
             setLoading(false);
         }
